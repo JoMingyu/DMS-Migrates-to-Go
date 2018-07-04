@@ -9,7 +9,21 @@ type runSetting struct {
 }
 
 var (
-	CommonSetting = commonSetting{"dms-v2"}
-	RunSetting    = runSetting{"4000"}
-	MongoURI      = "mongodb://localhost"
+	CommonSetting = new(commonSetting)
+	RunSetting    = new(runSetting)
+	MongoURI      string
 )
+
+func init() {
+	if CommonSetting == nil {
+		CommonSetting.ServiceName = "dms-v2"
+	}
+
+	if RunSetting == nil {
+		RunSetting.Port = "80"
+	}
+
+	if MongoURI == "" {
+		MongoURI = "mongodb://localhost"
+	}
+}
