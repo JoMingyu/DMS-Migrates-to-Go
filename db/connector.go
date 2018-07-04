@@ -6,15 +6,26 @@ import (
 	mgo "gopkg.in/mgo.v2-unstable"
 )
 
-var Session *mgo.Session
+var (
+	session           *mgo.Session
+	SignupWaitingCol  *mgo.Collection
+	StudentAccountCol *mgo.Collection
+	AccessTokenCol    *mgo.Collection
+	RefreshTokenCol   *mgo.Collection
+)
 
 func init() {
-	if Session == nil {
-		Session, _ = mgo.Dial(config.MongoURI)
-		Session.SetSafe(new(mgo.Safe))
+	if session == nil {
+		session, _ = mgo.Dial(config.MongoURI)
+		session.SetSafe(new(mgo.Safe))
 	}
+
+	SignupWaitingCol = DB().C("signup_waiting")
+	StudentAccountCol = DB().C("account_student")
+	AccessTokenCol = DB().C("access_token")
+	RefreshTokenCol = DB().C("refresh_token")
 }
 
 func DB() *mgo.Database {
-	return Session.DB(config.CommonSetting.ServiceName)
+	return session.DB(config.CommonSetting.ServiceName)
 }
