@@ -26,12 +26,5 @@ type TokenModel struct {
 	identity string `bson:"identity"`
 }
 
-type AccessTokenModel struct {
-	key      Key    `bson:"key"`
-	identity string `bson:"identity"`
-}
-
-type RefreshTokenModel struct {
-	key      Key    `bson:"key"`
-	identity string `bson:"identity"`
-}
+type AccessTokenModel TokenModel
+type RefreshTokenModel TokenModel
