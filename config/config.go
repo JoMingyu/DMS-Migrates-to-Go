@@ -9,18 +9,18 @@ type runSetting struct {
 }
 
 var (
-	CommonSetting = new(commonSetting)
-	RunSetting    = new(runSetting)
+	CommonSetting *commonSetting
+	RunSetting    *runSetting
 	MongoURI      string
 )
 
 func init() {
 	if CommonSetting == nil {
-		CommonSetting.ServiceName = "dms-v2"
+		CommonSetting = &commonSetting{"dms-v2"}
 	}
 
 	if RunSetting == nil {
-		RunSetting.Port = "80"
+		RunSetting = &runSetting{"8000"}
 	}
 
 	if MongoURI == "" {
