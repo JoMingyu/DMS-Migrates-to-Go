@@ -18,7 +18,7 @@ func generateUUID() string {
 	return identityStr
 }
 
-func generateToken(owner model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
+func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	identity := generateUUID()
 
@@ -30,7 +30,7 @@ func generateToken(owner model.StudentModel, userAgent string, collection *mgo.C
 
 	collection.Insert(model.TokenModel{
 		Key: model.Key{
-			Owner:     owner,
+			Owner:     *owner,
 			UserAgent: userAgent,
 		},
 		Identity: identity,
@@ -39,11 +39,11 @@ func generateToken(owner model.StudentModel, userAgent string, collection *mgo.C
 	return t
 }
 
-func GenerateAccessToken(owner model.StudentModel, userAgent string) string {
+func GenerateAccessToken(owner *model.StudentModel, userAgent string) string {
 	return generateToken(owner, userAgent, model.AccessTokenCol, time.Hour*24)
 }
 
-func GenerateRefreshToken(owner model.StudentModel, userAgent string) string {
+func GenerateRefreshToken(owner *model.StudentModel, userAgent string) string {
 	return generateToken(owner, userAgent, model.RefreshTokenCol, time.Hour*24*30)
 }
 
@@ -51,7 +51,7 @@ func ExtractStudentFromEchoContext(c echo.Context) *model.StudentModel {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	identity := claims["identity"]
-	token := &model.AccessTokenModel{}
+	token := &model.TokenModel{}
 
 	if err := model.AccessTokenCol.Find(bson.M{"identity": identity}).One(token); err != nil {
 		return nil
