@@ -20,4 +20,13 @@ func Setup(router *echo.Router) {
 		}
 	})
 
+	router.Add("GET", "/student/verify/uuid/:uuid", func(c echo.Context) error {
+		uuid := c.Param("uuid")
+
+		if count, _ := db.SignupWaitingCol.Find(bson.M{"uuid": uuid}).Count(); count != 0 {
+			return c.String(http.StatusConflict, "")
+		} else {
+			return c.String(http.StatusOK, "")
+		}
+	})
 }
