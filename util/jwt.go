@@ -7,6 +7,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	uuid "github.com/nu7hatch/gouuid"
+	mgo "gopkg.in/mgo.v2-unstable"
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
@@ -17,17 +18,17 @@ func generateUUID() string {
 	return identityStr
 }
 
-func GenerateAccessToken(owner model.StudentModel, userAgent string) string {
+func generateToken(owner model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	identity := generateUUID()
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["identity"] = identity
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(expire).Unix()
 
 	t, _ := token.SignedString([]byte("secret"))
 
-	model.AccessTokenCol.Insert(model.AccessTokenModel{
+	collection.Insert(model.TokenModel{
 		Key: model.Key{
 			Owner:     owner,
 			UserAgent: userAgent,
@@ -38,25 +39,12 @@ func GenerateAccessToken(owner model.StudentModel, userAgent string) string {
 	return t
 }
 
+func GenerateAccessToken(owner model.StudentModel, userAgent string) string {
+	return generateToken(owner, userAgent, model.AccessTokenCol, time.Hour*24)
+}
+
 func GenerateRefreshToken(owner model.StudentModel, userAgent string) string {
-	token := jwt.New(jwt.SigningMethodHS256)
-	identity := generateUUID()
-
-	claims := token.Claims.(jwt.MapClaims)
-	claims["identity"] = identity
-	claims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()
-
-	t, _ := token.SignedString([]byte("secret"))
-
-	model.RefreshTokenCol.Insert(model.RefreshTokenModel{
-		Key: model.Key{
-			Owner:     owner,
-			UserAgent: userAgent,
-		},
-		Identity: identity,
-	})
-
-	return t
+	return generateToken(owner, userAgent, model.RefreshTokenCol, time.Hour*24*30)
 }
 
 func ExtractStudentFromEchoContext(c echo.Context) *model.StudentModel {
