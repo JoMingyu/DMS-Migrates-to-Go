@@ -78,7 +78,7 @@ func StudentSignup(c echo.Context) error {
 		PenaltyLevel:          0,
 	})
 
-	model.SignupWaitingCol.Remove(bson.M{"uuid": payload.Uuid})
+	model.SignupWaitingCol.Remove(bson.M{"uuid": uuid})
 
 	return c.NoContent(http.StatusCreated)
 }

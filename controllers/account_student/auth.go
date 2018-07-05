@@ -36,5 +36,8 @@ func StudentLogin(c echo.Context) error {
 		return c.NoContent(http.StatusUnauthorized)
 	}
 
-	return c.NoContent(http.StatusOK)
+	return c.JSON(http.StatusOK, map[string]string{
+		"accessToken":  util.GenerateAccessToken(student, ""),
+		"refreshToken": util.GenerateRefreshToken(student, ""),
+	})
 }
