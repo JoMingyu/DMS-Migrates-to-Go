@@ -8,6 +8,12 @@ import (
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
+type studentSignupAPIBinder struct {
+	Uuid     string `json:"uuid"`
+	Id       string `json:"id"`
+	Password string `json:"password"`
+}
+
 func Setup(router *echo.Router) {
 	// 학생 ID 중복체크
 	router.Add("GET", "/student/verify/id/:id", func(c echo.Context) error {
