@@ -8,17 +8,6 @@ import (
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
-type studentSignupAPIBinder struct {
-	Uuid string `json:"uuid"`
-	Id   string `json:"id"`
-	Pw   string `json:"pw"`
-}
-
-type studentLoginAPIBinder struct {
-	Id string `json:"id"`
-	Pw string `json:"pw"`
-}
-
 // StudentCheckIDDuplication 함수는 학생 계정에 대해 ID의 중복 여부를 체크합니다
 func StudentCheckIDDuplication(c echo.Context) error {
 	id := c.Param("id")
@@ -45,7 +34,13 @@ func StudentValidateUUID(c echo.Context) error {
 
 // StudentSignup 함수는 학생 계정 회원가입을 수행합니다.
 func StudentSignup(c echo.Context) error {
-	payload := &studentSignupAPIBinder{}
+	type binder struct {
+		Uuid string `json:"uuid"`
+		Id   string `json:"id"`
+		Pw   string `json:"pw"`
+	}
+
+	payload := &binder{}
 
 	if err := c.Bind(payload); err != nil {
 		return c.NoContent(http.StatusBadRequest)

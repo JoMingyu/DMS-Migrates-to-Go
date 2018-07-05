@@ -2,6 +2,7 @@ package account_student
 
 import (
 	"DMS-Migrates-to-Go/model"
+	"DMS-Migrates-to-Go/util"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -10,7 +11,12 @@ import (
 
 // StudentLogin 함수는 학생 계정 로그인을 수행합니다.
 func StudentLogin(c echo.Context) error {
-	payload := &studentLoginAPIBinder{}
+	type binder struct {
+		Id string `json:"id"`
+		Pw string `json:"pw"`
+	}
+
+	payload := &binder{}
 
 	if err := c.Bind(payload); err != nil {
 		return c.NoContent(http.StatusBadRequest)
