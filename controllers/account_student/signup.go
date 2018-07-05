@@ -21,13 +21,18 @@ func Setup(router *echo.Router) {
 		return c.NoContent(http.StatusConflict)
 	})
 
+	// 학생 UUID 유효성 검사
 	router.Add("GET", "/student/verify/uuid/:uuid", func(c echo.Context) error {
 		uuid := c.Param("uuid")
 
-		if count, _ := db.SignupWaitingCol.Find(bson.M{"uuid": uuid}).Count(); count != 0 {
-			return c.String(http.StatusConflict, "")
-		} else {
-			return c.String(http.StatusOK, "")
+		if count, _ := model.SignupWaitingCol.Find(bson.M{"uuid": uuid}).Count(); count != 0 {
+			// UUID가 존재하는 경우
+			return c.NoContent(http.StatusOK)
+		}
+
+		return c.NoContent(http.StatusNoContent)
+	})
+
 		}
 	})
 }
