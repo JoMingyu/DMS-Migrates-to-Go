@@ -2,20 +2,20 @@ package util
 
 import (
 	"DMS-Migrates-to-Go/model"
+	"fmt"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	uuid "github.com/nu7hatch/gouuid"
+	uuid "github.com/satori/go.uuid"
 	mgo "gopkg.in/mgo.v2-unstable"
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
 func generateUUID() string {
 	identity, _ := uuid.NewV4()
-	identityStr := string(identity[:])
 
-	return identityStr
+	return fmt.Sprintf("%s", identity)
 }
 
 func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
