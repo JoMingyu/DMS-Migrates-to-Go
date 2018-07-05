@@ -8,7 +8,7 @@ import (
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
-// StudentLogin provides student login
+// StudentLogin 함수는 학생 계정 로그인을 수행합니다.
 func StudentLogin(c echo.Context) error {
 	payload := &studentLoginAPIBinder{}
 

@@ -19,7 +19,7 @@ type studentLoginAPIBinder struct {
 	Pw string `json:"pw"`
 }
 
-// StudentCheckIDDuplication provides student ID duplication check
+// StudentCheckIDDuplication 함수는 학생 계정에 대해 ID의 중복 여부를 체크합니다
 func StudentCheckIDDuplication(c echo.Context) error {
 	id := c.Param("id")
 
@@ -31,7 +31,7 @@ func StudentCheckIDDuplication(c echo.Context) error {
 	return c.NoContent(http.StatusConflict)
 }
 
-// StudentValidateUUID provides UUID validation
+// StudentValidateUUID 함수는 UUID의 유효성(존재 여부)을 체크합니다.
 func StudentValidateUUID(c echo.Context) error {
 	uuid := c.Param("uuid")
 
@@ -43,7 +43,7 @@ func StudentValidateUUID(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-// StudentSignup provides student signup
+// StudentSignup 함수는 학생 계정 회원가입을 수행합니다.
 func StudentSignup(c echo.Context) error {
 	payload := &studentSignupAPIBinder{}
 

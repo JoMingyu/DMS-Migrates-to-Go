@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Setup routes all APIs
+// Setup 함수는 WAS의 비즈니스 로직 수행을 위한 API들을 모아 라우팅합니다.
 func Setup(router *echo.Router) {
 	router.Add("GET", "/student/verify/id/:id", account_student.StudentCheckIDDuplication)
 	router.Add("GET", "/student/verify/uuid/:uuid", account_student.StudentValidateUUID)
