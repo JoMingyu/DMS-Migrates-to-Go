@@ -23,7 +23,7 @@ type StudentModel struct {
 	PenaltyLevel          int    `bson:"penaltyLevel"`
 }
 
-var StudentAccountCol = db.DB().C("student_account")
+var StudentAccountCol = db.DB().C("account_student")
 
 type Key struct {
 	Owner     StudentModel `bson:"owner"`
