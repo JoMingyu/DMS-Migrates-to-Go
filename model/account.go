@@ -29,17 +29,11 @@ type Key struct {
 	UserAgent string       `bson:"userAgent"`
 }
 
-// TokenModel 구조체는 AccessTokenModel과 RefreshTokenModel 타입을 위한 기반 구조체입니다.
+// TokenModel 구조체는 JWT access token과 refresh token에 대한 데이터를 관리합니다.
 type TokenModel struct {
 	Key      Key    `bson:"key"`
 	Identity string `bson:"identity"`
 }
-
-// AccessTokenModel 구조체는 JWT access token에 대한 데이터를 관리합니다.
-type AccessTokenModel TokenModel
-
-// RefreshTokenModel 구조체는 JWT refresh token에 대한 데이터를 관리합니다.
-type RefreshTokenModel TokenModel
 
 var (
 	// SignupWaitingCol 은 SignupWaitingModel에 대한 collection을 참조합니다.
