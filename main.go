@@ -12,7 +12,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
-	controllers.Setup(e.Router())
+	controllers.Setup(e.Router(), e.Group(""))
 
 	err := e.Start(":" + config.RunSetting.Port)
 	if err != nil {
