@@ -9,9 +9,9 @@ import (
 )
 
 type studentSignupAPIBinder struct {
-	Uuid     string `json:"uuid"`
-	Id       string `json:"id"`
-	Password string `json:"password"`
+	Uuid string `json:"uuid"`
+	Id   string `json:"id"`
+	Pw   string `json:"password"`
 }
 
 func Setup(router *echo.Router) {
@@ -47,21 +47,27 @@ func Setup(router *echo.Router) {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		if count, _ := model.StudentAccountCol.Find(bson.M{"id": payload.Id}).Count(); count != 0 {
+		var (
+			uuid = payload.Uuid
+			id   = payload.Id
+			pw   = payload.Pw
+		)
+
+		if count, _ := model.StudentAccountCol.Find(bson.M{"id": id}).Count(); count != 0 {
 			// ID가 이미 존재하는 경우
 			return c.NoContent(http.StatusConflict)
 		}
 
 		signupWaiting := &model.SignupWaitingModel{}
 
-		if error := model.SignupWaitingCol.Find(bson.M{"uuid": payload.Uuid}).One(signupWaiting); error != nil {
+		if error := model.SignupWaitingCol.Find(bson.M{"uuid": uuid}).One(signupWaiting); error != nil {
 			// UUID가 존재하지 않는 경우
 			return c.NoContent(http.StatusNoContent)
 		}
 
 		model.StudentAccountCol.Insert(model.StudentModel{
-			Id:                    payload.Id,
-			Pw:                    payload.Password,
+			Id:                    id,
+			Pw:                    pw,
 			Name:                  signupWaiting.Name,
 			Number:                signupWaiting.Number,
 			GoodPoint:             0,
@@ -69,6 +75,7 @@ func Setup(router *echo.Router) {
 			PenaltyTrainingStatus: false,
 			PenaltyLevel:          0,
 		})
+
 		model.SignupWaitingCol.Remove(bson.M{"uuid": payload.Uuid})
 
 		return c.NoContent(http.StatusCreated)
