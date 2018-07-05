@@ -14,6 +14,11 @@ type studentSignupAPIBinder struct {
 	Pw   string `json:"pw"`
 }
 
+type studentLoginAPIBinder struct {
+	Id string `json:"id"`
+	Pw string `json:"pw"`
+}
+
 func Setup(router *echo.Router) {
 	// 학생 ID 중복체크
 	router.Add("GET", "/student/verify/id/:id", func(c echo.Context) error {
@@ -82,5 +87,29 @@ func Setup(router *echo.Router) {
 		model.SignupWaitingCol.Remove(bson.M{"uuid": payload.Uuid})
 
 		return c.NoContent(http.StatusCreated)
+	})
+
+	router.Add("POST", "/student/login", func(c echo.Context) error {
+		payload := &studentLoginAPIBinder{}
+
+		if err := c.Bind(payload); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		var (
+			id = payload.Id
+			pw = payload.Pw
+		)
+
+		if id == "" || pw == "" {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		student := &model.StudentModel{}
+		if err := model.StudentAccountCol.Find(bson.M{"id": id, "pw": pw}).One(student); err != nil {
+			return c.NoContent(http.StatusUnauthorized)
+		}
+
+		return c.NoContent(http.StatusOK)
 	})
 }
