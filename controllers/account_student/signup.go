@@ -39,6 +39,38 @@ func Setup(router *echo.Router) {
 		return c.NoContent(http.StatusNoContent)
 	})
 
+	// 학생 회원가입
+	router.Add("POST", "/student/signup", func(c echo.Context) error {
+		payload := &studentSignupAPIBinder{}
+
+		if error := c.Bind(payload); error != nil {
+			return c.NoContent(http.StatusBadRequest)
 		}
+
+		if count, _ := model.StudentAccountCol.Find(bson.M{"id": payload.Id}).Count(); count != 0 {
+			// ID가 이미 존재하는 경우
+			return c.NoContent(http.StatusConflict)
+		}
+
+		signupWaiting := &model.SignupWaitingModel{}
+
+		if error := model.SignupWaitingCol.Find(bson.M{"uuid": payload.Uuid}).One(signupWaiting); error != nil {
+			// UUID가 존재하지 않는 경우
+			return c.NoContent(http.StatusNoContent)
+		}
+
+		model.StudentAccountCol.Insert(model.StudentModel{
+			Id:                    payload.Id,
+			Pw:                    payload.Password,
+			Name:                  signupWaiting.Name,
+			Number:                signupWaiting.Number,
+			GoodPoint:             0,
+			BadPoint:              0,
+			PenaltyTrainingStatus: false,
+			PenaltyLevel:          0,
+		})
+		model.SignupWaitingCol.Remove(bson.M{"uuid": payload.Uuid})
+
+		return c.NoContent(http.StatusCreated)
 	})
 }
