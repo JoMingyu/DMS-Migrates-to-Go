@@ -11,7 +11,7 @@ import (
 type studentSignupAPIBinder struct {
 	Uuid string `json:"uuid"`
 	Id   string `json:"id"`
-	Pw   string `json:"password"`
+	Pw   string `json:"pw"`
 }
 
 func Setup(router *echo.Router) {
