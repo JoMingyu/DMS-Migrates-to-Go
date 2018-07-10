@@ -6,9 +6,9 @@ import (
 
 // SignupWaitingModel 구조체는 아직 회원가입되지 않은 학생 데이터를 관리합니다.
 type SignupWaitingModel struct {
-	Uuid   string `bson:"uuid"`
-	Name   string `bson:"name"`
-	Number int    `bson:"number"`
+	Uuid   string `bson:"_id"` // PK
+	Name   string
+	Number int
 }
 
 // StudentModel 구조체는 학생 계정의 데이터를 관리합니다.

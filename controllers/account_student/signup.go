@@ -24,7 +24,7 @@ func StudentCheckIDDuplication(c echo.Context) error {
 func StudentValidateUUID(c echo.Context) error {
 	uuid := c.Param("uuid")
 
-	if count, _ := model.SignupWaitingCol.Find(bson.M{"uuid": uuid}).Count(); count != 0 {
+	if count, _ := model.SignupWaitingCol.Find(bson.M{"_id": uuid}).Count(); count != 0 {
 		// UUID가 존재하는 경우
 		return c.NoContent(http.StatusOK)
 	}
@@ -62,7 +62,7 @@ func StudentSignup(c echo.Context) error {
 	}
 
 	signupWaiting := &model.SignupWaitingModel{}
-	if err := model.SignupWaitingCol.Find(bson.M{"uuid": uuid}).One(signupWaiting); err != nil {
+	if err := model.SignupWaitingCol.Find(bson.M{"_id": payload.Uuid}).One(signupWaiting); err != nil {
 		// UUID가 존재하지 않는 경우
 		return c.NoContent(http.StatusNoContent)
 	}
@@ -78,7 +78,7 @@ func StudentSignup(c echo.Context) error {
 		PenaltyLevel:          0,
 	})
 
-	model.SignupWaitingCol.Remove(bson.M{"uuid": uuid})
+	model.SignupWaitingCol.Remove(bson.M{"_id": payload.Uuid})
 
 	return c.NoContent(http.StatusCreated)
 }
