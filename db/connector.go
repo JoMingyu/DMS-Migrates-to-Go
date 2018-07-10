@@ -19,5 +19,5 @@ func init() {
 
 // DB 함수는 db.session에 대해 데이터베이스의 참조를 얻어 반환합니다.
 func DB() *mgo.Database {
-	return session.DB(config.CommonSetting.ServiceName)
+	return session.DB(config.DBName)
 }

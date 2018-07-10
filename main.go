@@ -14,8 +14,5 @@ func main() {
 
 	controllers.Setup(e.Router(), e.Group(""))
 
-	err := e.Start(":" + config.RunSetting.Port)
-	if err != nil {
-		panic(err)
-	}
+	e.Start(":" + strconv.Itoa(config.Port))
 }
