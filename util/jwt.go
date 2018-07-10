@@ -12,18 +12,13 @@ import (
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
-func generateUUID() string {
-	identity, _ := uuid.NewV4()
-
-	return fmt.Sprintf("%s", identity)
-}
-
 func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
 	token := jwt.New(jwt.SigningMethodHS256)
-	identity := generateUUID()
+	identity, _ := uuid.NewV4()
+	identityStr := fmt.Sprintf("%s", identity)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["identity"] = identity
+	claims["identity"] = identityStr
 	claims["exp"] = time.Now().Add(expire).Unix()
 
 	t, _ := token.SignedString([]byte("secret"))
@@ -33,7 +28,7 @@ func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.
 			Owner:     *owner,
 			UserAgent: userAgent,
 		},
-		Identity: identity,
+		Identity: identityStr,
 	})
 
 	return t
