@@ -12,8 +12,8 @@ import (
 // ChangeStudentPassword 는 request body로 전달된 새로운 비밀번호로 학생 계정의 비밀번호를 변경합니다.
 func ChangeStudentPassword(c echo.Context) error {
 	type binder struct {
-		CurrentPW string `json:"currentPw"`
-		NewPW     string `json:"newPw"`
+		CurrentPw string `json:"currentPw"`
+		NewPw     string `json:"newPw"`
 	}
 
 	payload := &binder{}
@@ -22,27 +22,22 @@ func ChangeStudentPassword(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	var (
-		currentPw = payload.CurrentPW
-		newPw     = payload.NewPW
-	)
-
-	if currentPw == "" || newPw == "" {
+	if payload.CurrentPw == "" || payload.NewPw == "" {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
 	student := util.ExtractStudentFromEchoContext(c)
 
-	if student.Pw != currentPw {
+	if student.Pw != payload.CurrentPw {
 		return c.NoContent(http.StatusForbidden)
 	}
 
-	if currentPw == newPw {
+	if payload.CurrentPw == payload.NewPw {
 		// 현재 비밀번호와 새 비밀번호가 동일한 경우
 		return c.NoContent(http.StatusConflict)
 	}
 
-	model.StudentAccountCol.Update(bson.M{"id": student.Id}, bson.M{"$set": bson.M{"pw": newPw}})
+	model.StudentAccountCol.Update(bson.M{"_id": student.ID}, bson.M{"$set": bson.M{"pw": payload.NewPw}})
 
 	return c.NoContent(http.StatusOK)
 }

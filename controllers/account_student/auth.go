@@ -12,7 +12,7 @@ import (
 // StudentLogin 함수는 학생 계정 로그인을 수행합니다.
 func StudentLogin(c echo.Context) error {
 	type binder struct {
-		Id string `json:"id"`
+		ID string `json:"id"`
 		Pw string `json:"pw"`
 	}
 
@@ -22,17 +22,12 @@ func StudentLogin(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	var (
-		id = payload.Id
-		pw = payload.Pw
-	)
-
-	if id == "" || pw == "" {
+	if payload.ID == "" || payload.Pw == "" {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
 	student := &model.StudentModel{}
-	if err := model.StudentAccountCol.Find(bson.M{"id": id, "pw": pw}).One(student); err != nil {
+	if err := model.StudentAccountCol.Find(bson.M{"_id": payload.ID, "pw": payload.Pw}).One(student); err != nil {
 		return c.NoContent(http.StatusUnauthorized)
 	}
 
