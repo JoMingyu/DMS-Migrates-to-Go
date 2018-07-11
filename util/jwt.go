@@ -2,33 +2,34 @@ package util
 
 import (
 	"DMS-Migrates-to-Go/model"
-	"fmt"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	uuid "github.com/satori/go.uuid"
 	mgo "gopkg.in/mgo.v2-unstable"
 	"gopkg.in/mgo.v2-unstable/bson"
 )
 
 func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.Collection, expire time.Duration) string {
 	token := jwt.New(jwt.SigningMethodHS256)
-	identity, _ := uuid.NewV4()
-	identityStr := fmt.Sprintf("%s", identity)
+	identity := bson.NewObjectId()
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["identity"] = identityStr
+	claims["identity"] = identity.String()
 	claims["exp"] = time.Now().Add(expire).Unix()
 
 	t, _ := token.SignedString([]byte("secret"))
 
+	key := model.Key{
+		Owner:     *owner,
+		UserAgent: userAgent,
+	}
+
+	collection.RemoveAll(bson.M{"_id": key})
+
 	collection.Insert(model.TokenModel{
-		Key: model.Key{
-			Owner:     *owner,
-			UserAgent: userAgent,
-		},
-		Identity: identityStr,
+		ID:  identity,
+		Key: key,
 	})
 
 	return t
@@ -48,7 +49,7 @@ func ExtractStudentFromEchoContext(c echo.Context) *model.StudentModel {
 	identity := claims["identity"]
 	token := &model.TokenModel{}
 
-	if err := model.AccessTokenCol.Find(bson.M{"identity": identity}).One(token); err != nil {
+	if err := model.AccessTokenCol.Find(bson.M{"_id": bson.ObjectIdHex(identity.(string))}).One(token); err != nil {
 		return nil
 	}
 

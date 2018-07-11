@@ -2,6 +2,8 @@ package model
 
 import (
 	"DMS-Migrates-to-Go/db"
+
+	"gopkg.in/mgo.v2-unstable/bson"
 )
 
 // SignupWaitingModel 구조체는 아직 회원가입되지 않은 학생 데이터를 관리합니다.
@@ -29,14 +31,14 @@ type StudentModel struct {
 
 // Key 는 JWT token이 각 계정의 여러 디바이스에 하나씩 할당되도록 하기 위해 TokenModel에서 사용할 구조체입니다.
 type Key struct {
-	Owner     StudentModel `bson:"owner"`
-	UserAgent string       `bson:"userAgent"`
+	Owner     StudentModel
+	UserAgent string
 }
 
 // TokenModel 구조체는 JWT access token과 refresh token에 대한 데이터를 관리합니다.
 type TokenModel struct {
-	Key      Key    `bson:"key"`
-	Identity string `bson:"identity"`
+	ID  bson.ObjectId `bson:"_id"`
+	Key Key           // Unique
 }
 
 var (
