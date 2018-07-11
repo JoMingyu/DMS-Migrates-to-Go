@@ -11,16 +11,20 @@ type SignupWaitingModel struct {
 	Number int
 }
 
+type AccountBase struct {
+	ID   string `bson:"_id"` // PK
+	Pw   string
+	Name string
+}
+
 // StudentModel 구조체는 학생 계정의 데이터를 관리합니다.
 type StudentModel struct {
-	Id                    string `bson:"id"`
-	Pw                    string `bson:"pw"`
-	Name                  string `bson:"name"`
-	Number                int    `bson:"number"`
-	GoodPoint             int    `bson:"goodPoint"`
-	BadPoint              int    `bson:"badPoint"`
-	PenaltyTrainingStatus bool   `bson:"penaltyTrainingStatus`
-	PenaltyLevel          int    `bson:"penaltyLevel"`
+	AccountBase
+	Number                int
+	GoodPoint             int
+	BadPoint              int
+	PenaltyTrainingStatus bool
+	PenaltyLevel          int
 }
 
 // Key 는 JWT token이 각 계정의 여러 디바이스에 하나씩 할당되도록 하기 위해 TokenModel에서 사용할 구조체입니다.

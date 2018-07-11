@@ -12,7 +12,7 @@ import (
 func StudentCheckIDDuplication(c echo.Context) error {
 	id := c.Param("id")
 
-	if count, _ := model.StudentAccountCol.Find(bson.M{"id": id}).Count(); count == 0 {
+	if count, _ := model.StudentAccountCol.Find(bson.M{"_id": id}).Count(); count == 0 {
 		// ID가 존재하지 않는 경우
 		return c.NoContent(http.StatusOK)
 	}
@@ -36,7 +36,7 @@ func StudentValidateUUID(c echo.Context) error {
 func StudentSignup(c echo.Context) error {
 	type binder struct {
 		Uuid string `json:"uuid"`
-		Id   string `json:"id"`
+		ID   string `json:"id"`
 		Pw   string `json:"pw"`
 	}
 
@@ -46,17 +46,11 @@ func StudentSignup(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	var (
-		uuid = payload.Uuid
-		id   = payload.Id
-		pw   = payload.Pw
-	)
-
-	if uuid == "" || id == "" || pw == "" {
+	if payload.Uuid == "" || payload.ID == "" || payload.Pw == "" {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	if count, _ := model.StudentAccountCol.Find(bson.M{"id": id}).Count(); count != 0 {
+	if count, _ := model.StudentAccountCol.Find(bson.M{"_id": payload.ID}).Count(); count != 0 {
 		// ID가 이미 존재하는 경우
 		return c.NoContent(http.StatusConflict)
 	}
@@ -68,9 +62,11 @@ func StudentSignup(c echo.Context) error {
 	}
 
 	model.StudentAccountCol.Insert(model.StudentModel{
-		Id:                    id,
-		Pw:                    pw,
-		Name:                  signupWaiting.Name,
+		AccountBase: model.AccountBase{
+			ID:   payload.ID,
+			Pw:   payload.Pw,
+			Name: signupWaiting.Name,
+		},
 		Number:                signupWaiting.Number,
 		GoodPoint:             0,
 		BadPoint:              0,
