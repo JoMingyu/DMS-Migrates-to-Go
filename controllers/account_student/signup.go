@@ -43,7 +43,7 @@ func StudentSignup(c echo.Context) error {
 	payload := &binder{}
 
 	if err := c.Bind(payload); err != nil {
-		return c.NoContent(http.StatusBadRequest)
+		return err
 	}
 
 	if payload.Uuid == "" || payload.ID == "" || payload.Pw == "" {
@@ -62,11 +62,9 @@ func StudentSignup(c echo.Context) error {
 	}
 
 	model.StudentAccountCol.Insert(model.StudentModel{
-		AccountBase: model.AccountBase{
-			ID:   payload.ID,
-			Pw:   payload.Pw,
-			Name: signupWaiting.Name,
-		},
+		ID:                    payload.ID,
+		Pw:                    payload.Pw,
+		Name:                  signupWaiting.Name,
 		Number:                signupWaiting.Number,
 		GoodPoint:             0,
 		BadPoint:              0,

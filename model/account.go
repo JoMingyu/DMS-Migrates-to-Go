@@ -13,15 +13,11 @@ type SignupWaitingModel struct {
 	Number int
 }
 
-type AccountBase struct {
-	ID   string `bson:"_id"` // PK
-	Pw   string
-	Name string
-}
-
 // StudentModel 구조체는 학생 계정의 데이터를 관리합니다.
 type StudentModel struct {
-	AccountBase
+	ID                    string `bson:"_id"` // PK
+	Pw                    string
+	Name                  string
 	Number                int
 	GoodPoint             int
 	BadPoint              int

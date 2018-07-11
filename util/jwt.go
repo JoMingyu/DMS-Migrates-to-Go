@@ -25,7 +25,7 @@ func generateToken(owner *model.StudentModel, userAgent string, collection *mgo.
 		UserAgent: userAgent,
 	}
 
-	collection.RemoveAll(bson.M{"_id": key})
+	collection.RemoveAll(bson.M{"key": key})
 
 	collection.Insert(model.TokenModel{
 		ID:  identity,
