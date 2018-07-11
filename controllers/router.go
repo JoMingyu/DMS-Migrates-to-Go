@@ -18,10 +18,10 @@ func Setup(e *echo.Echo) {
 	tokenRequiredAdminAPIGroup := adminAPIGroup.Group("")
 	tokenRequiredAdminAPIGroup.Use(middleware.JWT([]byte("secret")))
 
-	studentAPIGroup.GET("/student/verify/id/:id", account_student.StudentCheckIDDuplication)
-	studentAPIGroup.GET("/student/verify/uuid/:uuid", account_student.StudentValidateUUID)
-	studentAPIGroup.GET("/student/verify/id/:id", account_student.StudentCheckIDDuplication)
-	studentAPIGroup.POST("/student/signup", account_student.StudentSignup)
-	studentAPIGroup.POST("/student/login", account_student.StudentLogin)
-	tokenRequiredStudentAPIGroup.POST("/student/change-pw", account_student.ChangeStudentPassword)
+	studentAPIGroup.GET("/verify/id/:id", account_student.StudentCheckIDDuplication)
+	studentAPIGroup.GET("/verify/uuid/:uuid", account_student.StudentValidateUUID)
+	studentAPIGroup.GET("/verify/id/:id", account_student.StudentCheckIDDuplication)
+	studentAPIGroup.POST("/signup", account_student.StudentSignup)
+	studentAPIGroup.POST("/login", account_student.StudentLogin)
+	// tokenRequiredStudentAPIGroup.POST("/student/change-pw", account_student.ChangeStudentPassword)
 }
